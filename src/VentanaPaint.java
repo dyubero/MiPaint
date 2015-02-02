@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import javax.swing.JButton;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,17 +18,25 @@ import java.awt.image.BufferedImage;
  */
 public class VentanaPaint extends javax.swing.JFrame {
 
+    
+    
+    
+    
     /**
      * Creates new form VentanaPaint
      */
     //creamos una variable de tipo linea para guardar la linea que dibuja el usuario.
     Line2D.Double linea = new Line2D.Double();
+   
 
+   
     //en una variable de tipo BufferedImage puedo almacenar una imagen.
     private BufferedImage buffer = null;
-    
+    int nBoton = 0;
     //almacena el color seleccionado
     Color colorSeleccionado = Color.black;
+    
+    
 
     public VentanaPaint() {
 
@@ -42,6 +51,30 @@ public class VentanaPaint extends javax.swing.JFrame {
         Graphics2D g2 = buffer.createGraphics();
         g2.setColor(Color.white);
         g2.fillRect(0, 0, anchoPanel, altoPanel);
+    }
+    
+    
+    private void leerBoton(String boton){
+    
+        if(boton.equals("arte")){
+            if(nBoton == 1){
+            nBoton = 0;
+            }
+            }else
+            if(boton.equals("square")){
+            if(nBoton == 2){
+            nBoton = 0;
+            }
+        nBoton = 2;
+        }
+    
+    
+    }
+    
+    
+    
+    private void miraBoton(JButton botonPulsado){
+    leerBoton(botonPulsado.getText());
     }
 
     @Override
@@ -74,6 +107,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
 
         jDialog1.setResizable(false);
 
@@ -96,28 +130,31 @@ public class VentanaPaint extends javax.swing.JFrame {
         jDialog1Layout.setHorizontalGroup(
             jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDialog1Layout.createSequentialGroup()
-                .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 642, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jDialog1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(29, 29, 29)
                 .addComponent(jButton6)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 642, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jDialog1Layout.setVerticalGroup(
             jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDialog1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
                 .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
-                .addGap(0, 14, Short.MAX_VALUE))
+                    .addComponent(jButton6)
+                    .addComponent(jButton5))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 204, 255));
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -166,15 +203,20 @@ public class VentanaPaint extends javax.swing.JFrame {
         jButton2.setText("Circle");
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 73, 64));
 
-        jButton3.setText("New");
+        jButton3.setText("arte");
         jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jButton3MousePressed(evt);
             }
         });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 74, 34));
 
-        jButton4.setText("Square");
+        jButton4.setText("square");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -182,61 +224,91 @@ public class VentanaPaint extends javax.swing.JFrame {
         });
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, 64));
 
+        jButton7.setText("jButton7");
+        getContentPane().add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 70, 60));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
         //se empieza a dibujar la linea
             //asi que almaceno en z1 y1 el punto donde se a producido el clic
+        
+        
+        
+        
         linea.x1 =evt.getX();
         linea.x2 =evt.getX();
         linea.y1 =evt.getY();
         linea.y2 =evt.getY();
+        
+        
+        
+         
+        
+        
         Graphics2D g2 = (Graphics2D)jPanel1.getGraphics();
         g2.draw(linea);
+         
     }//GEN-LAST:event_jPanel1MousePressed
-
+     
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
        //apunta al jPanel1
         Graphics2D g2 = (Graphics2D)jPanel1.getGraphics();
         //borro el jPanel con lo que hay en el buffer
+        
+        if(nBoton == 1){
+        
+        }else{
         g2.drawImage(buffer,0,0,null);
+        }
         
-        
+        if(nBoton == 1){
+        linea.x1 =evt.getX();
+        linea.y2 =evt.getY();
+        }else{
         linea.x2 =evt.getX();
         linea.y2 =evt.getY();
+        }
         //pinto la linea en el jPanel
          //*para hacer linea discontinua
-        float dash[] = {10.0f};
-        g2.setStroke(new BasicStroke(3.0f,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+       // float dash[] = {10.0f};
+       // g2.setStroke(new BasicStroke(3.0f,BasicStroke.JOIN_ROUND,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         //*
         g2.setColor(colorSeleccionado);
+        
         g2.draw(linea);
+       
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jPanel1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseReleased
-         //apunta al jPanel1
+         //apunta al buffer
         Graphics2D g2 = (Graphics2D)buffer.getGraphics();
        
-        
-        
         linea.x2 =evt.getX();
         linea.y2 =evt.getY();
+        
         //pinto la linea en el jPanel
         //*para hacer linea discontinua
-        float dash[] = {10.0f};
-        g2.setStroke(new BasicStroke(3.0f,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        //float dash[] = {10.0f};
+      // g2.setStroke(new BasicStroke(3.0f,BasicStroke.JOIN_ROUND,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         //*
         g2.setColor(colorSeleccionado);
         g2.draw(linea);
         //vuelvo a apuntar al jPanel
         g2 = (Graphics2D)jPanel1.getGraphics();
         //borro el jPanel con lo que hay en el buffer
+        
+        if(nBoton == 1){
+        
+        }else{
         g2.drawImage(buffer,0,0,null);
+        }
+         
     }//GEN-LAST:event_jPanel1MouseReleased
 
     private void jButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MousePressed
-       
+       miraBoton((JButton)evt.getSource());
     }//GEN-LAST:event_jButton3MousePressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -259,6 +331,10 @@ public class VentanaPaint extends javax.swing.JFrame {
     private void jButton6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MousePressed
       jDialog1.setVisible(false);
     }//GEN-LAST:event_jButton6MousePressed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -302,6 +378,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JPanel jPanel1;
