@@ -1,11 +1,34 @@
 
+import javax.swing.ImageIcon;
+
+import javax.swing.filechooser.FileFilter;
+
+
+
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+
+
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import javax.swing.JButton;
+import java.io.File;
+import java.io.IOException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,20 +49,39 @@ public class VentanaPaint extends javax.swing.JFrame {
      * Creates new form VentanaPaint
      */
     //creamos una variable de tipo linea para guardar la linea que dibuja el usuario.
-    Line2D.Double linea = new Line2D.Double();
+    private Line2D.Double linea = new Line2D.Double();
+    private Ellipse2D.Double circulo;
+    private Rectangle2D.Double cuadrado;
    
 
    
     //en una variable de tipo BufferedImage puedo almacenar una imagen.
     private BufferedImage buffer = null;
-    int nBoton = 0;
+    
+    private int x1;
+    private int x2;
+    private int y1;
+    private int y2;
+    
+    
     //almacena el color seleccionado
     Color colorSeleccionado = Color.black;
     
+     private Image img,img2;
+    private Cursor cursorLapiz,cursorGoma;
+    int seleccionCursor = 0;
+    String estados = "";
+    int numeroLinea = 0;
     
-
+     
     public VentanaPaint() {
-
+       
+        img = Toolkit.getDefaultToolkit().createImage("src/1423070099_editor_pencil_pen_edit_write-32.png");
+        cursorLapiz = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(0, 25), "img");
+        img2 = Toolkit.getDefaultToolkit().createImage("src/1423069882_eraser.png");
+        cursorGoma = Toolkit.getDefaultToolkit().createCustomCursor(img2, new Point(0, 25), "img2");
+          setCursor(Cursor.CROSSHAIR_CURSOR);   
+        
         initComponents();
         jDialog1.setSize(550,500);
         int anchoPanel = jPanel1.getWidth();
@@ -51,42 +93,22 @@ public class VentanaPaint extends javax.swing.JFrame {
         Graphics2D g2 = buffer.createGraphics();
         g2.setColor(Color.white);
         g2.fillRect(0, 0, anchoPanel, altoPanel);
+        
+        
     }
     
-    
-    private void leerBoton(String boton){
-    
-        if(boton.equals("arte")){
-            if(nBoton == 1){
-            nBoton = 0;
-            }
-            }else
-            if(boton.equals("square")){
-            if(nBoton == 2){
-            nBoton = 0;
-            }
-        nBoton = 2;
-        }
-    
-    
-    }
-    
-    
-    
-    private void miraBoton(JButton botonPulsado){
-    leerBoton(botonPulsado.getText());
-    }
-
     @Override
     public void paint(Graphics g) {
         //llamo al paintComponents de la clase jFrame para qie se pinten bien los objetos de la aplicacion
         super.paintComponents(g);
 
-        //a continuación apunto al jPanel
+       // a continuación apunto al jPanel
         Graphics2D g2 = (Graphics2D) jPanel1.getGraphics();
 
-        //pinto el buffer sobre el jPanel
-        g2.drawImage(buffer, 0, 0, null);
+       // pinto el buffer sobre el jPanel
+       g2.drawImage(buffer, 0, 0, null);
+       
+      
     }
 
     /**
@@ -100,28 +122,55 @@ public class VentanaPaint extends javax.swing.JFrame {
 
         jDialog1 = new javax.swing.JDialog();
         jColorChooser1 = new javax.swing.JColorChooser();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        BotonAceptarColor = new javax.swing.JButton();
+        BotonCancelarColor = new javax.swing.JButton();
+        jDialog2 = new javax.swing.JDialog();
+        SliderAncho = new javax.swing.JSlider();
+        BotonOKAncho = new javax.swing.JButton();
+        BotonCancelarAncho = new javax.swing.JButton();
+        BotonAplicarAncho = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        BotonColor = new javax.swing.JButton();
+        BolorLapiz = new javax.swing.JButton();
+        BotonCuadrado = new javax.swing.JButton();
+        BotonGrosor = new javax.swing.JButton();
+        BotonRedo = new javax.swing.JButton();
+        BotonLinea = new javax.swing.JButton();
+        BotonNuevo = new javax.swing.JButton();
+        BotonCirculo = new javax.swing.JButton();
+        BotonUndo = new javax.swing.JButton();
+        estado = new javax.swing.JComboBox();
+        jSeparator1 = new javax.swing.JSeparator();
+        BotonGoma = new javax.swing.JButton();
+        BotonGuardar = new javax.swing.JButton();
+        BotonCargar = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
 
         jDialog1.setResizable(false);
+        jDialog1.setType(java.awt.Window.Type.UTILITY);
 
-        jButton5.setText("Aceptar");
-        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+        BotonAceptarColor.setText("Aceptar");
+        BotonAceptarColor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton5MousePressed(evt);
+                BotonAceptarColorMousePressed(evt);
+            }
+        });
+        BotonAceptarColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonAceptarColorActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Cancelar");
-        jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+        BotonCancelarColor.setText("Cancelar");
+        BotonCancelarColor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton6MousePressed(evt);
+                BotonCancelarColorMousePressed(evt);
+            }
+        });
+        BotonCancelarColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonCancelarColorActionPerformed(evt);
             }
         });
 
@@ -131,25 +180,114 @@ public class VentanaPaint extends javax.swing.JFrame {
             jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDialog1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton5)
-                .addGap(29, 29, 29)
-                .addComponent(jButton6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 642, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 585, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(BotonAceptarColor)
+                        .addGap(18, 18, 18)
+                        .addComponent(BotonCancelarColor)))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         jDialog1Layout.setVerticalGroup(
             jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDialog1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton5))
+                    .addComponent(BotonCancelarColor)
+                    .addComponent(BotonAceptarColor)))
+        );
+
+        jDialog2.setTitle("tipo");
+        jDialog2.setMinimumSize(new java.awt.Dimension(510, 220));
+        jDialog2.setResizable(false);
+
+        SliderAncho.setMajorTickSpacing(5);
+        SliderAncho.setMaximum(50);
+        SliderAncho.setMinorTickSpacing(1);
+        SliderAncho.setPaintLabels(true);
+        SliderAncho.setPaintTicks(true);
+        SliderAncho.setSnapToTicks(true);
+        SliderAncho.setValue(5);
+
+        BotonOKAncho.setText("ok");
+        BotonOKAncho.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonOKAnchoMousePressed(evt);
+            }
+        });
+        BotonOKAncho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonOKAnchoActionPerformed(evt);
+            }
+        });
+
+        BotonCancelarAncho.setText("Cancelar");
+        BotonCancelarAncho.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonCancelarAnchoMousePressed(evt);
+            }
+        });
+        BotonCancelarAncho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonCancelarAnchoActionPerformed(evt);
+            }
+        });
+
+        BotonAplicarAncho.setText("Aplicar");
+        BotonAplicarAncho.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonAplicarAnchoMousePressed(evt);
+            }
+        });
+        BotonAplicarAncho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonAplicarAnchoActionPerformed(evt);
+            }
+        });
+
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField1.setName(""); // NOI18N
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
+        jDialog2.getContentPane().setLayout(jDialog2Layout);
+        jDialog2Layout.setHorizontalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(SliderAncho, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+            .addGroup(jDialog2Layout.createSequentialGroup()
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDialog2Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(BotonAplicarAncho, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BotonCancelarAncho))
+                    .addGroup(jDialog2Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BotonOKAncho)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jDialog2Layout.setVerticalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(SliderAncho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BotonOKAncho)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BotonCancelarAncho)
+                    .addComponent(BotonAplicarAncho))
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -158,7 +296,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setBorder(new javax.swing.border.MatteBorder(null));
         jPanel1.setPreferredSize(new java.awt.Dimension(778, 400));
         jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
@@ -166,6 +304,12 @@ public class VentanaPaint extends javax.swing.JFrame {
             }
         });
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jPanel1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jPanel1MouseExited(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jPanel1MousePressed(evt);
             }
@@ -178,64 +322,190 @@ public class VentanaPaint extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 774, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(97, 13, -1, 652));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 3, 770, 670));
 
-        jButton1.setText("Color");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        BotonColor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/rsz_1rsz_1423068917_color.png"))); // NOI18N
+        BotonColor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton1MousePressed(evt);
+                BotonColorMousePressed(evt);
             }
         });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        BotonColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BotonColorActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 70, 64));
+        getContentPane().add(BotonColor, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 180, 40, 40));
 
-        jButton2.setText("Circle");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 73, 64));
-
-        jButton3.setText("arte");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        BolorLapiz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423070099_editor_pencil_pen_edit_write-32.png"))); // NOI18N
+        BolorLapiz.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton3MousePressed(evt);
+                BolorLapizMousePressed(evt);
             }
         });
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        BolorLapiz.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                BolorLapizActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 74, 34));
+        getContentPane().add(BolorLapiz, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 180, 40, 40));
 
-        jButton4.setText("square");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        BotonCuadrado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423068527_ic_crop_square_48px-32.png"))); // NOI18N
+        BotonCuadrado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonCuadradoMousePressed(evt);
+            }
+        });
+        BotonCuadrado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                BotonCuadradoActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, 64));
+        getContentPane().add(BotonCuadrado, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 80, 40, 40));
 
-        jButton7.setText("jButton7");
-        getContentPane().add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 70, 60));
+        BotonGrosor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423069442_line_width.png"))); // NOI18N
+        BotonGrosor.setText("Grosor");
+        BotonGrosor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        BotonGrosor.setMaximumSize(new java.awt.Dimension(97, 73));
+        BotonGrosor.setMinimumSize(new java.awt.Dimension(97, 73));
+        BotonGrosor.setPreferredSize(new java.awt.Dimension(97, 73));
+        BotonGrosor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        BotonGrosor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonGrosorMousePressed(evt);
+            }
+        });
+        BotonGrosor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonGrosorActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonGrosor, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 230, 90, 80));
+
+        BotonRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423071071_Redo.png"))); // NOI18N
+        BotonRedo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonRedoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonRedo, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 17, 40, 40));
+
+        BotonLinea.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423069711_line.png"))); // NOI18N
+        BotonLinea.setMaximumSize(new java.awt.Dimension(65, 41));
+        BotonLinea.setMinimumSize(new java.awt.Dimension(65, 41));
+        BotonLinea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonLineaMousePressed(evt);
+            }
+        });
+        BotonLinea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonLineaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonLinea, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 130, 40, 40));
+
+        BotonNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423489881_new10-32.png"))); // NOI18N
+        BotonNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonNuevoMousePressed(evt);
+            }
+        });
+        BotonNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonNuevoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 370, 40, 40));
+
+        BotonCirculo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423068469_check-circle-outline-blank-24.png"))); // NOI18N
+        BotonCirculo.setMaximumSize(new java.awt.Dimension(65, 41));
+        BotonCirculo.setMinimumSize(new java.awt.Dimension(65, 41));
+        BotonCirculo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonCirculoMousePressed(evt);
+            }
+        });
+        BotonCirculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonCirculoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonCirculo, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 80, 40, 40));
+
+        BotonUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423071061_Undo.png"))); // NOI18N
+        BotonUndo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        BotonUndo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonUndoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonUndo, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 17, 40, 40));
+
+        estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Liso", "Punteada", "Rayada", "Mixta" }));
+        estado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                estadoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(estado, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 320, 90, 30));
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(3, 358, 100, 10));
+
+        BotonGoma.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423069882_eraser.png"))); // NOI18N
+        BotonGoma.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonGomaMousePressed(evt);
+            }
+        });
+        BotonGoma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonGomaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonGoma, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 130, 40, 40));
+
+        BotonGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423489857_save.png"))); // NOI18N
+        BotonGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonGuardarMousePressed(evt);
+            }
+        });
+        BotonGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonGuardarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 370, 40, 40));
+
+        BotonCargar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423492074_ic_folder_open_48px-32.png"))); // NOI18N
+        BotonCargar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonCargarMousePressed(evt);
+            }
+        });
+        BotonCargar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonCargarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonCargar, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 420, 40, 40));
+        getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(3, 74, 100, 10));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
         //se empieza a dibujar la linea
-            //asi que almaceno en z1 y1 el punto donde se a producido el clic
+            //asi que almaceno en x1 y1 el punto donde se a producido el clic
         
-        
-        
+      
         
         linea.x1 =evt.getX();
         linea.x2 =evt.getX();
@@ -244,98 +514,311 @@ public class VentanaPaint extends javax.swing.JFrame {
         
         
         
+        
          
         
         
         Graphics2D g2 = (Graphics2D)jPanel1.getGraphics();
-        g2.draw(linea);
-         
+        //g2.draw(linea);
+        
+        
     }//GEN-LAST:event_jPanel1MousePressed
      
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
-       //apunta al jPanel1
+     
+        
+//apunta al jPanel1
         Graphics2D g2 = (Graphics2D)jPanel1.getGraphics();
+        
         //borro el jPanel con lo que hay en el buffer
         
-        if(nBoton == 1){
-        
-        }else{
-        g2.drawImage(buffer,0,0,null);
-        }
-        
-        if(nBoton == 1){
-        linea.x1 =evt.getX();
-        linea.y2 =evt.getY();
-        }else{
+       
+       g2.setColor(colorSeleccionado);
         linea.x2 =evt.getX();
         linea.y2 =evt.getY();
-        }
+        
+       
         //pinto la linea en el jPanel
          //*para hacer linea discontinua
-       // float dash[] = {10.0f};
-       // g2.setStroke(new BasicStroke(3.0f,BasicStroke.JOIN_ROUND,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        
+        String stringLinea = (estado.getSelectedItem().toString());
+        if (stringLinea.equals("Liso")){
+         g2.setStroke(new BasicStroke(SliderAncho.getValue()));
+        }
+        if(stringLinea.equals("Mixta")){
+            float dash[] = {21.0f,9.0f,3.0f,9.0f};
+        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        }
+        if(stringLinea.equals("Punteada")){
+            float dash[] = {5.0f,5.0f};
+        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        }
+        if(stringLinea.equals("Rayada")){
+            float dash[] = {21.0f,9.0f};
+        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        }
         //*
-        g2.setColor(colorSeleccionado);
         
         g2.draw(linea);
+        g2.drawImage(buffer,0,0,null);
+        g2.draw(linea);
        
+        
+        
+        
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jPanel1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseReleased
          //apunta al buffer
         Graphics2D g2 = (Graphics2D)buffer.getGraphics();
        
-        linea.x2 =evt.getX();
-        linea.y2 =evt.getY();
+       linea.x2 =evt.getX();
+       linea.y2 =evt.getY();
         
         //pinto la linea en el jPanel
+        
         //*para hacer linea discontinua
-        //float dash[] = {10.0f};
-      // g2.setStroke(new BasicStroke(3.0f,BasicStroke.JOIN_ROUND,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        
+         String stringLinea = (estado.getSelectedItem().toString());
+        if (stringLinea.equals("Liso")){
+         g2.setStroke(new BasicStroke(SliderAncho.getValue()));
+        }
+        if(stringLinea.equals("Mixta")){
+            float dash[] = {21.0f,9.0f,3.0f,9.0f};
+        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        }
+        if(stringLinea.equals("Punteada")){
+            float dash[] = {5.0f,5.0f};
+        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        }
+        if(stringLinea.equals("Rayada")){
+            float dash[] = {21.0f,9.0f};
+        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        }
+        
         //*
         g2.setColor(colorSeleccionado);
-        g2.draw(linea);
+       g2.draw(linea);
         //vuelvo a apuntar al jPanel
         g2 = (Graphics2D)jPanel1.getGraphics();
         //borro el jPanel con lo que hay en el buffer
-        
-        if(nBoton == 1){
-        
-        }else{
+       
+       
         g2.drawImage(buffer,0,0,null);
-        }
+        
          
     }//GEN-LAST:event_jPanel1MouseReleased
 
-    private void jButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MousePressed
-       miraBoton((JButton)evt.getSource());
-    }//GEN-LAST:event_jButton3MousePressed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void BotonColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonColorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_BotonColorActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void BotonCuadradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCuadradoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_BotonCuadradoActionPerformed
 
-    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
+    private void BotonColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonColorMousePressed
        jDialog1.setVisible(true);
-    }//GEN-LAST:event_jButton1MousePressed
+    }//GEN-LAST:event_BotonColorMousePressed
 
-    private void jButton5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MousePressed
+    private void BotonAceptarColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAceptarColorMousePressed
        colorSeleccionado = jColorChooser1.getColor();
        jDialog1.setVisible(false);
-    }//GEN-LAST:event_jButton5MousePressed
+    }//GEN-LAST:event_BotonAceptarColorMousePressed
 
-    private void jButton6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MousePressed
+    private void BotonCancelarColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCancelarColorMousePressed
       jDialog1.setVisible(false);
-    }//GEN-LAST:event_jButton6MousePressed
+    }//GEN-LAST:event_BotonCancelarColorMousePressed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void BotonGrosorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGrosorMousePressed
+       jDialog2.setVisible(true);
+       
+       
+    }//GEN-LAST:event_BotonGrosorMousePressed
+
+    private void BotonOKAnchoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonOKAnchoMousePressed
+        
+    }//GEN-LAST:event_BotonOKAnchoMousePressed
+
+    private void BotonCancelarAnchoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCancelarAnchoMousePressed
+        jDialog2.setVisible(false);
+    }//GEN-LAST:event_BotonCancelarAnchoMousePressed
+
+    private void BotonOKAnchoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonOKAnchoActionPerformed
+      int anchoLinea = Integer.parseInt(jTextField1.getText());
+      SliderAncho.setValue(anchoLinea);
+      
+      
+    }//GEN-LAST:event_BotonOKAnchoActionPerformed
+
+    private void BotonCancelarAnchoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCancelarAnchoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_BotonCancelarAnchoActionPerformed
 
+    private void BotonAplicarAnchoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAplicarAnchoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonAplicarAnchoActionPerformed
+
+    private void BotonAplicarAnchoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAplicarAnchoMousePressed
+         
+        jDialog2.setVisible(false);
+        
+    }//GEN-LAST:event_BotonAplicarAnchoMousePressed
+
+    private void BotonCancelarColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCancelarColorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonCancelarColorActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void BotonGrosorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGrosorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonGrosorActionPerformed
+
+    private void BolorLapizActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BolorLapizActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BolorLapizActionPerformed
+
+    private void BotonRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonRedoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonRedoActionPerformed
+
+    private void BotonLineaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonLineaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonLineaActionPerformed
+
+    private void BotonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonNuevoActionPerformed
+      
+        
+    }//GEN-LAST:event_BotonNuevoActionPerformed
+
+    private void BotonCirculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCirculoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonCirculoActionPerformed
+
+    private void BotonUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonUndoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonUndoActionPerformed
+
+    private void BotonAceptarColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAceptarColorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonAceptarColorActionPerformed
+
+    private void BotonGomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGomaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonGomaActionPerformed
+
+    private void BotonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGuardarActionPerformed
+       
+    }//GEN-LAST:event_BotonGuardarActionPerformed
+
+    private void BotonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGuardarMousePressed
+    
+     JFileChooser fileChooser = new JFileChooser();
+     
+int seleccion = fileChooser.showSaveDialog(this);
+ fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+if (seleccion == JFileChooser.APPROVE_OPTION)
+{
+   File fichero = fileChooser.getSelectedFile();
+   try {
+                ImageIO.write(buffer, "png", fileChooser.getSelectedFile());
+               
+            } catch (IOException ex) {
+                Logger.getLogger(VentanaPaint.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Save as file: ");
+         
+ 
+}
+
+     
+    }//GEN-LAST:event_BotonGuardarMousePressed
+
+    private void BotonCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCargarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BotonCargarActionPerformed
+
+    private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
+       
+        ImageIcon picturetoInsert = new ImageIcon(this.toString()); JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);  
+        FileFilter filtro = new FileNameExtensionFilter("Image files","jpeg","jpg");  
+        fileChooser.setFileFilter(filtro);  
+int seleccion = fileChooser.showOpenDialog(this);
+
+if (seleccion == JFileChooser.APPROVE_OPTION)
+{
+   File fichero = fileChooser.getSelectedFile();
+}
+if (seleccion == JFileChooser.CANCEL_OPTION){
+}
+if (seleccion == JFileChooser.ERROR_OPTION){
+}
+    }//GEN-LAST:event_BotonCargarMousePressed
+
+    private void BotonNuevoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonNuevoMousePressed
+        int ancho = jPanel1.getWidth();
+        int alto = jPanel1.getHeight();
+        
+        Graphics2D g3 = buffer.createGraphics();
+        g3.setColor(Color.white);
+        g3.fillRect(0, 0, ancho, alto);
+        
+    }//GEN-LAST:event_BotonNuevoMousePressed
+
+    private void BolorLapizMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BolorLapizMousePressed
+        seleccionCursor = 1;
+    }//GEN-LAST:event_BolorLapizMousePressed
+
+    private void jPanel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseExited
+        setCursor(Cursor.DEFAULT_CURSOR);
+    }//GEN-LAST:event_jPanel1MouseExited
+
+    private void jPanel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseEntered
+        if(seleccionCursor == 2){
+        setCursor(cursorGoma);
+        }
+        
+        if(seleccionCursor == 1) {
+            setCursor(cursorLapiz);
+        }
+        
+        if(seleccionCursor == 0){
+            setCursor(Cursor.CROSSHAIR_CURSOR);
+        }
+    }//GEN-LAST:event_jPanel1MouseEntered
+
+    private void BotonCuadradoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCuadradoMousePressed
+seleccionCursor = 0;    
+    }//GEN-LAST:event_BotonCuadradoMousePressed
+
+    private void BotonGomaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGomaMousePressed
+       seleccionCursor = 2; 
+    }//GEN-LAST:event_BotonGomaMousePressed
+
+    private void BotonLineaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonLineaMousePressed
+       seleccionCursor = 0; 
+    }//GEN-LAST:event_BotonLineaMousePressed
+
+    private void BotonCirculoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCirculoMousePressed
+        seleccionCursor = 0; 
+    }//GEN-LAST:event_BotonCirculoMousePressed
+
+    private void estadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoActionPerformed
+     
+       
+       
+    }//GEN-LAST:event_estadoActionPerformed
+
+    
+    
+    
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -372,15 +855,31 @@ public class VentanaPaint extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
+    private javax.swing.JButton BolorLapiz;
+    private javax.swing.JButton BotonAceptarColor;
+    private javax.swing.JButton BotonAplicarAncho;
+    private javax.swing.JButton BotonCancelarAncho;
+    private javax.swing.JButton BotonCancelarColor;
+    private javax.swing.JButton BotonCargar;
+    private javax.swing.JButton BotonCirculo;
+    private javax.swing.JButton BotonColor;
+    private javax.swing.JButton BotonCuadrado;
+    private javax.swing.JButton BotonGoma;
+    private javax.swing.JButton BotonGrosor;
+    private javax.swing.JButton BotonGuardar;
+    private javax.swing.JButton BotonLinea;
+    private javax.swing.JButton BotonNuevo;
+    private javax.swing.JButton BotonOKAncho;
+    private javax.swing.JButton BotonRedo;
+    private javax.swing.JButton BotonUndo;
+    private javax.swing.JSlider SliderAncho;
+    public static javax.swing.JComboBox estado;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JDialog jDialog2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
