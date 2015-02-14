@@ -70,6 +70,7 @@ public class VentanaPaint extends javax.swing.JFrame {
      private Image img,img2;
     private Cursor cursorLapiz,cursorGoma;
     int seleccionCursor = 0;
+    int opcionForma = 0;
     String estados = "";
     int numeroLinea = 0;
     
@@ -506,20 +507,14 @@ public class VentanaPaint extends javax.swing.JFrame {
             //asi que almaceno en x1 y1 el punto donde se a producido el clic
         
       
-        
+      if(opcionForma==0 || opcionForma==1){
         linea.x1 =evt.getX();
-        linea.x2 =evt.getX();
         linea.y1 =evt.getY();
-        linea.y2 =evt.getY();
+      }
+      
         
         
         
-        
-         
-        
-        
-        Graphics2D g2 = (Graphics2D)jPanel1.getGraphics();
-        //g2.draw(linea);
         
         
     }//GEN-LAST:event_jPanel1MousePressed
@@ -534,8 +529,8 @@ public class VentanaPaint extends javax.swing.JFrame {
         
        
        g2.setColor(colorSeleccionado);
-        linea.x2 =evt.getX();
-        linea.y2 =evt.getY();
+       
+       
         
        
         //pinto la linea en el jPanel
@@ -558,10 +553,26 @@ public class VentanaPaint extends javax.swing.JFrame {
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         }
         //*
-        
+        if(opcionForma==0){
+        linea.x2 =evt.getX();
+        linea.y2 =evt.getY();
         g2.draw(linea);
         g2.drawImage(buffer,0,0,null);
         g2.draw(linea);
+       }
+       if(opcionForma==1){
+           Graphics2D g3 = (Graphics2D) buffer.getGraphics();
+                x2 = evt.getX();
+                y2 = evt.getY();
+                if (x1 != x2 || y1 != y2) {
+                    
+                    g2.drawLine(x1, y1, x2, y2);
+                   
+                    x1 = x2;
+                    y1 = y2;
+                }
+       }
+        
        
         
         
@@ -572,13 +583,11 @@ public class VentanaPaint extends javax.swing.JFrame {
          //apunta al buffer
         Graphics2D g2 = (Graphics2D)buffer.getGraphics();
        
-       linea.x2 =evt.getX();
-       linea.y2 =evt.getY();
+   
         
-        //pinto la linea en el jPanel
+        
         
         //*para hacer linea discontinua
-        
          String stringLinea = (estado.getSelectedItem().toString());
         if (stringLinea.equals("Liso")){
          g2.setStroke(new BasicStroke(SliderAncho.getValue()));
@@ -595,16 +604,25 @@ public class VentanaPaint extends javax.swing.JFrame {
             float dash[] = {21.0f,9.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         }
-        
         //*
+        
+        
         g2.setColor(colorSeleccionado);
+        
+        if(opcionForma==0){
        g2.draw(linea);
+        g2.drawImage(buffer,0,0,null);
+        }
+        if(opcionForma==1){
+         g2.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
+        }
         //vuelvo a apuntar al jPanel
-        g2 = (Graphics2D)jPanel1.getGraphics();
+        
         //borro el jPanel con lo que hay en el buffer
        
+       g2 = (Graphics2D) jPanel1.getGraphics();
+        g2.drawImage(buffer, 0, 0, null);
        
-        g2.drawImage(buffer,0,0,null);
         
          
     }//GEN-LAST:event_jPanel1MouseReleased
@@ -771,6 +789,7 @@ if (seleccion == JFileChooser.ERROR_OPTION){
 
     private void BolorLapizMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BolorLapizMousePressed
         seleccionCursor = 1;
+        opcionForma = 1;
     }//GEN-LAST:event_BolorLapizMousePressed
 
     private void jPanel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseExited
@@ -801,6 +820,7 @@ seleccionCursor = 0;
 
     private void BotonLineaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonLineaMousePressed
        seleccionCursor = 0; 
+       opcionForma = 0;
     }//GEN-LAST:event_BotonLineaMousePressed
 
     private void BotonCirculoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCirculoMousePressed
