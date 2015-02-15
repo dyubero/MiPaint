@@ -72,7 +72,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     //almacena el color seleccionado
     Color colorSeleccionado = Color.black;
     
-     private Image img,img2;
+    private Image img,img2;
     private Cursor cursorLapiz,cursorGoma;
     int seleccionCursor = 0;
     int opcionForma = 0;
@@ -82,7 +82,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     private Graphics2D g2;
      
     public VentanaPaint() {
-        
+       ;
        linea = new Line2D.Double();
         circulo = new Ellipse2D.Double();
         rectangulo = new Rectangle2D.Double();
@@ -164,6 +164,9 @@ public class VentanaPaint extends javax.swing.JFrame {
         BotonCargar = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jButton1 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
 
         jDialog1.setResizable(false);
         jDialog1.setType(java.awt.Window.Type.UTILITY);
@@ -315,7 +318,6 @@ public class VentanaPaint extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(new javax.swing.border.MatteBorder(null));
-        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jPanel1.setPreferredSize(new java.awt.Dimension(778, 400));
         jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
@@ -341,14 +343,14 @@ public class VentanaPaint extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 768, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 658, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 3, 770, 670));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 3, 770, 660));
 
         BotonColor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/rsz_1rsz_1423068917_color.png"))); // NOI18N
         BotonColor.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -515,6 +517,14 @@ public class VentanaPaint extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 10, 90, 65));
 
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -569,19 +579,23 @@ public class VentanaPaint extends javax.swing.JFrame {
         
         String stringLinea = (estado.getSelectedItem().toString());
         if (stringLinea.equals("Liso")){
+         g4.setStroke(new BasicStroke(SliderAncho.getValue()));
          g2.setStroke(new BasicStroke(SliderAncho.getValue()));
         }
         if(stringLinea.equals("Mixta")){
             float dash[] = {21.0f,9.0f,3.0f,9.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+       
         }
         if(stringLinea.equals("Punteada")){
             float dash[] = {5.0f,5.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        
         }
         if(stringLinea.equals("Rayada")){
             float dash[] = {21.0f,9.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        
         }
         //*
         
@@ -590,14 +604,14 @@ public class VentanaPaint extends javax.swing.JFrame {
         linea.x2 =evt.getX();
         linea.y2 =evt.getY();
         g2.draw(linea);
-        
+       
        }
        if(opcionForma==1 || opcionForma==4){
           if (opcionForma==4){
               g4.setStroke(new BasicStroke(SliderAncho.getValue()+20));
             g4.setColor(Color.WHITE);
-           }else{g4.setColor(colorSeleccionado);}
-         
+           }else{g4.setColor(colorSeleccionado);
+                g4.setStroke(new BasicStroke(SliderAncho.getValue()));}
                 x2 = evt.getX();
                 y2 = evt.getY();
                 if (x1 != x2 || y1 != y2) {
@@ -844,20 +858,6 @@ if (seleccion == JFileChooser.APPROVE_OPTION)
 
     private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
        
-        ImageIcon picturetoInsert = new ImageIcon(this.toString()); JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);  
-        FileFilter filtro = new FileNameExtensionFilter("Image files","jpeg","jpg");  
-        fileChooser.setFileFilter(filtro);  
-int seleccion = fileChooser.showOpenDialog(this);
-
-if (seleccion == JFileChooser.APPROVE_OPTION)
-{
-   File fichero = fileChooser.getSelectedFile();
-}
-if (seleccion == JFileChooser.CANCEL_OPTION){
-}
-if (seleccion == JFileChooser.ERROR_OPTION){
-}
     }//GEN-LAST:event_BotonCargarMousePressed
 
     private void BotonNuevoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonNuevoMousePressed
@@ -865,7 +865,7 @@ if (seleccion == JFileChooser.ERROR_OPTION){
         int alto = jPanel1.getHeight();
         
          g4.setColor(Color.white);
-	g4.fillRect(0, 0, ancho-1, alto-1);
+	g4.fillRect(0, 0, ancho, alto);
         g2 = (Graphics2D) jPanel1.getGraphics();
         g2.drawImage(buffer, 0, 0, null);
     }//GEN-LAST:event_BotonNuevoMousePressed
@@ -874,24 +874,6 @@ if (seleccion == JFileChooser.ERROR_OPTION){
         seleccionCursor = 1;
         opcionForma = 1;
     }//GEN-LAST:event_BolorLapizMousePressed
-
-    private void jPanel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseExited
-        setCursor(Cursor.DEFAULT_CURSOR);
-    }//GEN-LAST:event_jPanel1MouseExited
-
-    private void jPanel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseEntered
-        if(seleccionCursor == 2){
-        setCursor(cursorGoma);
-        }
-        
-        if(seleccionCursor == 1) {
-            setCursor(cursorLapiz);
-        }
-        
-        if(seleccionCursor == 0){
-            setCursor(Cursor.CROSSHAIR_CURSOR);
-        }
-    }//GEN-LAST:event_jPanel1MouseEntered
 
     private void BotonCuadradoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCuadradoMousePressed
 seleccionCursor = 0;  
@@ -928,6 +910,22 @@ opcionForma=3;
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423068527_ic_crop_square_48px-322.0.png")));
        }
     }//GEN-LAST:event_jButton1MousePressed
+
+    private void jPanel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseExited
+      setCursor(Cursor.DEFAULT_CURSOR);
+    }//GEN-LAST:event_jPanel1MouseExited
+
+    private void jPanel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseEntered
+       switch (seleccionCursor){
+           
+           case 0:setCursor(Cursor.CROSSHAIR_CURSOR);break;
+           case 1:setCursor(cursorLapiz);break;
+           case 2:setCursor(cursorGoma);break;
+           
+       }
+      
+       
+    }//GEN-LAST:event_jPanel1MouseEntered
 
     
    
@@ -991,6 +989,9 @@ opcionForma=3;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
