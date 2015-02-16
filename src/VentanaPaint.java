@@ -514,22 +514,25 @@ public class VentanaPaint extends javax.swing.JFrame {
         if(stringLinea.equals("Mixta")){
             //datos de como se quiere que se pinte la linea
             float dash[] = {21.0f,9.0f,3.0f,9.0f};
-        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+            g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+      
        
         }
          //cuando la linea elegida es Punteada
         if(stringLinea.equals("Punteada")){
             float dash[] = {5.0f,5.0f};
-        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+            g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+        
         
         }
          //cuando la linea elegida es Rayada
         if(stringLinea.equals("Rayada")){
             float dash[] = {21.0f,9.0f};
-        g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+            g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
+       
         }
         //*
-        
+         
         //se selecciona el color
          g2.setColor(colorSeleccionado);
          
