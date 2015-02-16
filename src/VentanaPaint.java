@@ -1,7 +1,4 @@
 
-import javax.swing.ImageIcon;
-
-import javax.swing.filechooser.FileFilter;
 
 
 
@@ -24,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import java.util.ArrayList;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,44 +50,53 @@ public class VentanaPaint extends javax.swing.JFrame {
      */
     //creamos una variable de tipo linea para guardar la linea que dibuja el usuario.
     private Line2D.Double linea = new Line2D.Double();
+     //creamos una variable de tipo circulo para guardar el circulo que dibuja el usuario.
     private Ellipse2D.Double circulo;
+     //creamos una variable de tipo rectangulo para guardar el rectangulo que dibuja el usuario.
     private Rectangle2D.Double rectangulo;
    
 
    
     //en una variable de tipo BufferedImage puedo almacenar una imagen.
     private BufferedImage buffer;
-    
+    //variables de posicion
     private int x1;
     private int x2;
     private int y1;
     private int y2;
     private double inicioX;
     private double inicioY;
+    
+    
+    //determina si la figura se rellena o no
     private int relleno;
     
     
     //almacena el color seleccionado
     Color colorSeleccionado = Color.black;
-    
+    //imagenes de los cursores goma y lapiz
     private Image img,img2;
     private Cursor cursorLapiz,cursorGoma;
+    //determina el tipo de cursor correspondiente en cada caso
     int seleccionCursor = 0;
+    //determina la forma geometrica o estilo de pintado que se va a efectuar
     int opcionForma = 0;
+    //usado para determinar el tipo de trazo
     String estados = "";
-    int numeroLinea = 0;
+    
+ 
     private Graphics2D g4;
     private Graphics2D g2;
      
     public VentanaPaint() {
-       ;
+       //variables de tipo linea, rectangulo y circulo
        linea = new Line2D.Double();
         circulo = new Ellipse2D.Double();
         rectangulo = new Rectangle2D.Double();
 
-        
+        //inicializacion del buffer
          buffer = null;
-       
+       //ponemos las imagenes del cursor con sus correspondientes cursores
         img = Toolkit.getDefaultToolkit().createImage("src/1423070099_editor_pencil_pen_edit_write-32.png");
         cursorLapiz = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(0, 25), "img");
         img2 = Toolkit.getDefaultToolkit().createImage("src/1423069882_eraser.png");
@@ -97,7 +104,9 @@ public class VentanaPaint extends javax.swing.JFrame {
        
         
         initComponents();
-        jDialog1.setSize(550,500);
+       
+       
+        //variables que miden el tamaño del jPanel
         int anchoPanel = jPanel1.getWidth();
         int altoPanel = jPanel1.getHeight();
 
@@ -106,7 +115,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         
         Graphics2D g3 = buffer.createGraphics();
         
-        
+        //le damos color blanco al Panel
         g3.setColor(Color.white);
         g3.fillRect(0, 0, anchoPanel, altoPanel);
         
@@ -149,6 +158,8 @@ public class VentanaPaint extends javax.swing.JFrame {
         BotonCancelarAncho = new javax.swing.JButton();
         BotonAplicarAncho = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
+        jDialog3 = new javax.swing.JDialog();
+        jFileChooser1 = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         BotonColor = new javax.swing.JButton();
         BolorLapiz = new javax.swing.JButton();
@@ -161,12 +172,8 @@ public class VentanaPaint extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         BotonGoma = new javax.swing.JButton();
         BotonGuardar = new javax.swing.JButton();
-        BotonCargar = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jButton1 = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
 
         jDialog1.setResizable(false);
         jDialog1.setType(java.awt.Window.Type.UTILITY);
@@ -177,21 +184,11 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonAceptarColorMousePressed(evt);
             }
         });
-        BotonAceptarColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonAceptarColorActionPerformed(evt);
-            }
-        });
 
         BotonCancelarColor.setText("Cancelar");
         BotonCancelarColor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 BotonCancelarColorMousePressed(evt);
-            }
-        });
-        BotonCancelarColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonCancelarColorActionPerformed(evt);
             }
         });
 
@@ -238,21 +235,11 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonOKAnchoMousePressed(evt);
             }
         });
-        BotonOKAncho.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonOKAnchoActionPerformed(evt);
-            }
-        });
 
         BotonCancelarAncho.setText("Cancelar");
         BotonCancelarAncho.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 BotonCancelarAnchoMousePressed(evt);
-            }
-        });
-        BotonCancelarAncho.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonCancelarAnchoActionPerformed(evt);
             }
         });
 
@@ -262,19 +249,9 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonAplicarAnchoMousePressed(evt);
             }
         });
-        BotonAplicarAncho.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonAplicarAnchoActionPerformed(evt);
-            }
-        });
 
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField1.setName(""); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
         jDialog2.getContentPane().setLayout(jDialog2Layout);
@@ -308,6 +285,23 @@ public class VentanaPaint extends javax.swing.JFrame {
                 .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BotonCancelarAncho)
                     .addComponent(BotonAplicarAncho))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jDialog3Layout = new javax.swing.GroupLayout(jDialog3.getContentPane());
+        jDialog3.getContentPane().setLayout(jDialog3Layout);
+        jDialog3Layout.setHorizontalGroup(
+            jDialog3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jDialog3Layout.setVerticalGroup(
+            jDialog3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -358,11 +352,6 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonColorMousePressed(evt);
             }
         });
-        BotonColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonColorActionPerformed(evt);
-            }
-        });
         getContentPane().add(BotonColor, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 180, 40, 40));
 
         BolorLapiz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423070099_editor_pencil_pen_edit_write-32.png"))); // NOI18N
@@ -371,22 +360,12 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BolorLapizMousePressed(evt);
             }
         });
-        BolorLapiz.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BolorLapizActionPerformed(evt);
-            }
-        });
         getContentPane().add(BolorLapiz, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 180, 40, 40));
 
         BotonCuadrado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423068527_ic_crop_square_48px-32.png"))); // NOI18N
         BotonCuadrado.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 BotonCuadradoMousePressed(evt);
-            }
-        });
-        BotonCuadrado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonCuadradoActionPerformed(evt);
             }
         });
         getContentPane().add(BotonCuadrado, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 80, 40, 40));
@@ -404,11 +383,6 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonGrosorMousePressed(evt);
             }
         });
-        BotonGrosor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonGrosorActionPerformed(evt);
-            }
-        });
         getContentPane().add(BotonGrosor, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 230, 90, 80));
 
         BotonLinea.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423069711_line.png"))); // NOI18N
@@ -419,22 +393,12 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonLineaMousePressed(evt);
             }
         });
-        BotonLinea.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonLineaActionPerformed(evt);
-            }
-        });
         getContentPane().add(BotonLinea, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 130, 40, 40));
 
         BotonNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423489881_new10-32.png"))); // NOI18N
         BotonNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 BotonNuevoMousePressed(evt);
-            }
-        });
-        BotonNuevo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonNuevoActionPerformed(evt);
             }
         });
         getContentPane().add(BotonNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 370, 40, 40));
@@ -447,20 +411,10 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonCirculoMousePressed(evt);
             }
         });
-        BotonCirculo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonCirculoActionPerformed(evt);
-            }
-        });
         getContentPane().add(BotonCirculo, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 80, 40, 40));
 
         estado.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Liso", "Punteada", "Rayada", "Mixta" }));
-        estado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                estadoActionPerformed(evt);
-            }
-        });
         getContentPane().add(estado, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 320, 90, 30));
         getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(3, 360, 100, 10));
 
@@ -468,11 +422,6 @@ public class VentanaPaint extends javax.swing.JFrame {
         BotonGoma.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 BotonGomaMousePressed(evt);
-            }
-        });
-        BotonGoma.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonGomaActionPerformed(evt);
             }
         });
         getContentPane().add(BotonGoma, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 130, 40, 40));
@@ -483,25 +432,7 @@ public class VentanaPaint extends javax.swing.JFrame {
                 BotonGuardarMousePressed(evt);
             }
         });
-        BotonGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonGuardarActionPerformed(evt);
-            }
-        });
         getContentPane().add(BotonGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 370, 40, 40));
-
-        BotonCargar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423492074_ic_folder_open_48px-32.png"))); // NOI18N
-        BotonCargar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                BotonCargarMousePressed(evt);
-            }
-        });
-        BotonCargar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BotonCargarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(BotonCargar, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 420, 40, 40));
         getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 225, 100, 10));
 
         jButton1.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
@@ -517,39 +448,35 @@ public class VentanaPaint extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 10, 90, 65));
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
-
-        setJMenuBar(jMenuBar1);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
-        //se empieza a dibujar la linea
-            //asi que almaceno en x1 y1 el punto donde se a producido el clic
+       
         
-      
+      //cuando es una linea
       if(opcionForma==0){
+          //se toma el punto inicial
         linea.x1 =evt.getX();
         linea.y1 =evt.getY();
       }
+      //cuando la opcion es libre o goma
          if( opcionForma==1 || opcionForma==4){
+             //se toma el punto inicial
           x1 =evt.getX();
           y1 =evt.getY();
       }
-        
+        //cuando la opcion es un circulo
         if(opcionForma==2){
-      circulo.x = evt.getX();
+                circulo.x = evt.getX();
                 circulo.y = evt.getY();
-                // Centro del circulo
+                // se toma el centro del circulo
                 inicioX = circulo.x;
                 inicioY = circulo.y;
        }
+        //cuando la opcion es un rectangulo
         if(opcionForma==3){
+            //se toma la esquina superior izquierda, o inferior derecha
         inicioX = evt.getX();
                 inicioY = evt.getY();
                 rectangulo.x = inicioX;
@@ -563,10 +490,11 @@ public class VentanaPaint extends javax.swing.JFrame {
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
      
         
-//apunta al jPanel1
-      
+
+      //borro el jPanel con lo que hay en el buffer
+        //esto se hace para que no se pinte por donde pasa la figura
         g2.drawImage(buffer, 0, 0, null);
-        //borro el jPanel con lo que hay en el buffer
+        
         
        
       
@@ -574,56 +502,75 @@ public class VentanaPaint extends javax.swing.JFrame {
        
         
        
-        //pinto la linea en el jPanel
-         //*para hacer linea discontinua
         
+         //*para hacer linea discontinua
         String stringLinea = (estado.getSelectedItem().toString());
+        //cuando la linea elegida es Lisa
         if (stringLinea.equals("Liso")){
-         g4.setStroke(new BasicStroke(SliderAncho.getValue()));
+         //se usa para darle el grosor deseado a la linea, segun el valor del Slider
          g2.setStroke(new BasicStroke(SliderAncho.getValue()));
         }
+         //cuando la linea elegida es Mixta
         if(stringLinea.equals("Mixta")){
+            //datos de como se quiere que se pinte la linea
             float dash[] = {21.0f,9.0f,3.0f,9.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
        
         }
+         //cuando la linea elegida es Punteada
         if(stringLinea.equals("Punteada")){
             float dash[] = {5.0f,5.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         
         }
+         //cuando la linea elegida es Rayada
         if(stringLinea.equals("Rayada")){
             float dash[] = {21.0f,9.0f};
         g2.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
-        
         }
         //*
         
+        //se selecciona el color
          g2.setColor(colorSeleccionado);
+         
+         //---------LINEA----------
+         
+         //cuando la forma es igual a linea
         if(opcionForma==0){
+            //se toman los dos puntos en los que se encuentra el cursor 
         linea.x2 =evt.getX();
         linea.y2 =evt.getY();
+        //se pinta la linea
         g2.draw(linea);
-       
        }
+        
+         //---------LIBRE Y GOMA----------
+        //cuando la forma es igual a libre o goma
        if(opcionForma==1 || opcionForma==4){
+           //cuando es goma, se le ajusta el color y el tamaño
           if (opcionForma==4){
               g4.setStroke(new BasicStroke(SliderAncho.getValue()+20));
             g4.setColor(Color.WHITE);
-           }else{g4.setColor(colorSeleccionado);
-                g4.setStroke(new BasicStroke(SliderAncho.getValue()));}
+           }else{
+            //devuelve el color y ancho que se tenia escogido 
+              g4.setColor(colorSeleccionado);
+                g4.setStroke(new BasicStroke(SliderAncho.getValue()));
+          }
+            //se toma la posicion del cursor
                 x2 = evt.getX();
                 y2 = evt.getY();
+                //cuando x1 no es igual a x2 o y1 no es igual a y2
+                //significa que ha movido el cursor
                 if (x1 != x2 || y1 != y2) {
                     g4.drawLine(x1, y1, x2, y2);
+                    //se iguala para luego poder volver a comprobar el if
                     y1 = y2;
                     x1 = x2;
                 }
        }
+        //---------CIRCULO----------
        if(opcionForma==2){
-       double radio,
-                 d1,
-                 d2;
+       double radio,d1,d2;
                 d1 = evt.getX() - inicioX;
                 if (d1 < 0) {
                     d1 = inicioX - evt.getX();
@@ -632,7 +579,7 @@ public class VentanaPaint extends javax.swing.JFrame {
                 if (d2 < 0) {
                     d2 = inicioY - evt.getY();
                 }
-                radio = pow(d1, 2) + pow(d2, 2); // modulo vector
+                radio = pow(d1, 2) + pow(d2, 2);
                 if (radio < 0) {
                     radio = radio * -1;
                 }
@@ -643,7 +590,7 @@ public class VentanaPaint extends javax.swing.JFrame {
                 circulo.width = circulo.height;
                 g2.draw(circulo);
        }
-        
+         //---------RECTANGULO----------
        if(opcionForma==3){
         if (evt.getX() > inicioX) {
             rectangulo.width = evt.getX() - rectangulo.x;
@@ -665,205 +612,151 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jPanel1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseReleased
-         //apunta al buffer
-        
-       
-   
-        
-        
-        
+         
         //*para hacer linea discontinua
          String stringLinea = (estado.getSelectedItem().toString());
+         //cuando la linea elegida es Lisa
         if (stringLinea.equals("Liso")){
+            //se usa para darle el grosor deseado a la linea, segun el valor del Slider
          g4.setStroke(new BasicStroke(SliderAncho.getValue()));
         }
+        //cuando la linea elegida es Mixta
         if(stringLinea.equals("Mixta")){
             float dash[] = {21.0f,9.0f,3.0f,9.0f};
         g4.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         }
+        //cuando la linea elegida es Punteada
         if(stringLinea.equals("Punteada")){
             float dash[] = {5.0f,5.0f};
         g4.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         }
+        //cuando la linea elegida es Rayada
         if(stringLinea.equals("Rayada")){
             float dash[] = {21.0f,9.0f};
         g4.setStroke(new BasicStroke(SliderAncho.getValue(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10.0f, dash,0.0f));
         }
+        //se selecciona el color 
         g4.setColor(colorSeleccionado);
         //*
         
         
         
-        
+        //---------LINEA----------
         if(opcionForma==0){
+        //se pinta la linea
        g4.draw(linea);
         
         }
+        //---------LIBRE Y GOMA----------
         if(opcionForma==1 || opcionForma==4){
+            //cuando es goma, se le ajusta el color y el tamaño
            if (opcionForma==4){
             g4.setColor(Color.WHITE);
-           }else{g4.setColor(colorSeleccionado);} 
+           }else{//devuelve el color que se tenia escogido 
+               g4.setColor(colorSeleccionado);
+           } 
+           //se pinta la linea
          g4.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
          
         }
-        
+        //---------CIRCULO----------
          if(opcionForma==2){
        g4.draw(circulo);
+       //en el caso de que el relleno sea 1, se rellena la figura
+       //PD:lo he puesto solo en el Mouse released porque me parece que queda mejor
        if(relleno==1){
           g4.fill(circulo);
          }
        }
+         //---------RECTANGULO----------
          if(opcionForma==3){
          g4.draw(rectangulo);
+         //en el caso de que el relleno sea 1, se rellena la figura
+         //PD:lo he puesto solo en el Mouse released porque me parece que queda mejor
          if(relleno==1){
           g4.fill(rectangulo);
+          
          }
+         
         }
          
         
-        //vuelvo a apuntar al jPanel
         
-        //borro el jPanel con lo que hay en el buffer
-       
+        
+        
+       //vuelvo a apuntar al jPanel
        g2 = (Graphics2D) jPanel1.getGraphics();
-        g2.drawImage(buffer, 0, 0, null);
        
+       
+       //borro el jPanel con lo que hay en el buffer
+       g2.drawImage(buffer, 0, 0, null);
+       	
         
          
     }//GEN-LAST:event_jPanel1MouseReleased
 
-    private void BotonColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonColorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonColorActionPerformed
-
-    private void BotonCuadradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCuadradoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonCuadradoActionPerformed
-
     private void BotonColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonColorMousePressed
-       jDialog1.setVisible(true);
+      //hacemos visible el jDialog1
+        jDialog1.setVisible(true);
     }//GEN-LAST:event_BotonColorMousePressed
 
     private void BotonAceptarColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAceptarColorMousePressed
-       colorSeleccionado = jColorChooser1.getColor();
+      // selecciona color de la paleta
+        colorSeleccionado = jColorChooser1.getColor();
+        //hacemos invisible el jDialog1
        jDialog1.setVisible(false);
     }//GEN-LAST:event_BotonAceptarColorMousePressed
 
     private void BotonCancelarColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCancelarColorMousePressed
-      jDialog1.setVisible(false);
+       //hacemos invisible el jDialog1
+        jDialog1.setVisible(false);
     }//GEN-LAST:event_BotonCancelarColorMousePressed
 
     private void BotonGrosorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGrosorMousePressed
-       jDialog2.setVisible(true);
+       //hacemos visible el jDialog2
+        jDialog2.setVisible(true);
        
        
     }//GEN-LAST:event_BotonGrosorMousePressed
 
     private void BotonOKAnchoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonOKAnchoMousePressed
-        
+          //usado para darle el valor encontrado en el textField al Slider
+        int anchoLinea = Integer.parseInt(jTextField1.getText());
+      SliderAncho.setValue(anchoLinea);
     }//GEN-LAST:event_BotonOKAnchoMousePressed
 
     private void BotonCancelarAnchoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCancelarAnchoMousePressed
+        //hacemos invisible el jDialog2
         jDialog2.setVisible(false);
     }//GEN-LAST:event_BotonCancelarAnchoMousePressed
 
-    private void BotonOKAnchoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonOKAnchoActionPerformed
-      int anchoLinea = Integer.parseInt(jTextField1.getText());
-      SliderAncho.setValue(anchoLinea);
-      
-      
-    }//GEN-LAST:event_BotonOKAnchoActionPerformed
-
-    private void BotonCancelarAnchoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCancelarAnchoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonCancelarAnchoActionPerformed
-
-    private void BotonAplicarAnchoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAplicarAnchoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonAplicarAnchoActionPerformed
-
     private void BotonAplicarAnchoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAplicarAnchoMousePressed
-         
+          //hacemos invisible el jDialog2
         jDialog2.setVisible(false);
         
     }//GEN-LAST:event_BotonAplicarAnchoMousePressed
 
-    private void BotonCancelarColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCancelarColorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonCancelarColorActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void BotonGrosorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGrosorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonGrosorActionPerformed
-
-    private void BolorLapizActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BolorLapizActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BolorLapizActionPerformed
-
-    private void BotonLineaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonLineaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonLineaActionPerformed
-
-    private void BotonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonNuevoActionPerformed
-      
-        
-    }//GEN-LAST:event_BotonNuevoActionPerformed
-
-    private void BotonCirculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCirculoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonCirculoActionPerformed
-
-    private void BotonAceptarColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAceptarColorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonAceptarColorActionPerformed
-
-    private void BotonGomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGomaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonGomaActionPerformed
-
-    private void BotonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGuardarActionPerformed
-       
-    }//GEN-LAST:event_BotonGuardarActionPerformed
-
     private void BotonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGuardarMousePressed
-    
-     JFileChooser fileChooser = new JFileChooser();
-     
-int seleccion = fileChooser.showSaveDialog(this);
- fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-if (seleccion == JFileChooser.APPROVE_OPTION)
-{
-   File fichero = fileChooser.getSelectedFile();
-   try {
-                ImageIO.write(buffer, "png", fileChooser.getSelectedFile());
+     int seleccion = jFileChooser1.showSaveDialog(this);
+        jFileChooser1.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File fichero = jFileChooser1.getSelectedFile();
+            
+            try {
+                ImageIO.write(buffer, "png", jFileChooser1.getSelectedFile());
                
             } catch (IOException ex) {
                 Logger.getLogger(VentanaPaint.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println("Save as file: ");
-         
- 
-}
-
-     
+        }
     }//GEN-LAST:event_BotonGuardarMousePressed
-
-    private void BotonCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonCargarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BotonCargarActionPerformed
-
-    private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
-       
-    }//GEN-LAST:event_BotonCargarMousePressed
 
     private void BotonNuevoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonNuevoMousePressed
         int ancho = jPanel1.getWidth();
         int alto = jPanel1.getHeight();
         
+        //se colorea un rectangulo del tamaño del jPanel1 de color blanco para borrarlo todo
          g4.setColor(Color.white);
 	g4.fillRect(0, 0, ancho, alto);
         g2 = (Graphics2D) jPanel1.getGraphics();
@@ -871,55 +764,68 @@ if (seleccion == JFileChooser.APPROVE_OPTION)
     }//GEN-LAST:event_BotonNuevoMousePressed
 
     private void BolorLapizMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BolorLapizMousePressed
+       //se le otorga 1 para que el cursor cambie a la forma lapiz
         seleccionCursor = 1;
+        //se otorga 1 para que pinte dibujo libre
         opcionForma = 1;
     }//GEN-LAST:event_BolorLapizMousePressed
 
     private void BotonCuadradoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCuadradoMousePressed
-seleccionCursor = 0;  
-opcionForma=3;
+       //cursor por defecto
+        seleccionCursor = 0;  
+        //rectangulos
+        opcionForma=3;
     }//GEN-LAST:event_BotonCuadradoMousePressed
 
     private void BotonGomaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGomaMousePressed
-       seleccionCursor = 2; 
+      //se le otorga 2 para que el cursor cambie a la forma goma
+        seleccionCursor = 2; 
+        //se otorga 4 para hacerlo tipo goma
        opcionForma=4;
     }//GEN-LAST:event_BotonGomaMousePressed
 
     private void BotonLineaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonLineaMousePressed
-       seleccionCursor = 0; 
+      //cursor por defecto
+        seleccionCursor = 0; 
+        //linea
        opcionForma = 0;
     }//GEN-LAST:event_BotonLineaMousePressed
 
     private void BotonCirculoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCirculoMousePressed
+        //cursor por defecto
         seleccionCursor = 0; 
+        //circulo
         opcionForma = 2;
     }//GEN-LAST:event_BotonCirculoMousePressed
 
-    private void estadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoActionPerformed
-     
-       
-       
-    }//GEN-LAST:event_estadoActionPerformed
-
     private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
-       if(relleno==1){
+      //boton que rellena las figuras
+        //cuando es 1 se devuelve 0 y cuando es 0 se devuelve 1,
+        //esto se hace para que el mismo boton active y desactive el relleno
+        if(relleno==1){
        relleno=0;
+       //imagen del boton (vacio)
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423068527_ic_crop_square_48px-32.png")));
        }else{
         relleno = 1;
+        //imagen del boton (relleno)
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/1423068527_ic_crop_square_48px-322.0.png")));
        }
     }//GEN-LAST:event_jButton1MousePressed
 
     private void jPanel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseExited
-      setCursor(Cursor.DEFAULT_CURSOR);
+      //cuando sale del jPanel se pone la flecha como cursor
+        setCursor(Cursor.DEFAULT_CURSOR);
     }//GEN-LAST:event_jPanel1MouseExited
 
     private void jPanel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseEntered
-       switch (seleccionCursor){
-           
+      
+        switch (seleccionCursor){
+           //cursor por defecto
            case 0:setCursor(Cursor.CROSSHAIR_CURSOR);break;
+           //cursor lapiz
            case 1:setCursor(cursorLapiz);break;
+           //cursor goma
            case 2:setCursor(cursorGoma);break;
            
        }
@@ -973,7 +879,6 @@ opcionForma=3;
     private javax.swing.JButton BotonAplicarAncho;
     private javax.swing.JButton BotonCancelarAncho;
     private javax.swing.JButton BotonCancelarColor;
-    private javax.swing.JButton BotonCargar;
     private javax.swing.JButton BotonCirculo;
     private javax.swing.JButton BotonColor;
     private javax.swing.JButton BotonCuadrado;
@@ -989,9 +894,8 @@ opcionForma=3;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JDialog jDialog3;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
